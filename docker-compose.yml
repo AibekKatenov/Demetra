@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  database:
+    container_name: demetra_test
+    hostname: "demetra_test_db"
+    image: postgres:15
+    env_file: ".env"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - demetra_test_network
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis: 
+    image: redis
+    env_file: ".env"
+    ports: 
+      - ${REDIS_PORT}:6379
+    volumes:
+      - redis:/data
+
+networks:
+  demetra_test_network:
+
+volumes:
+  postgres-data:
+  redis:
